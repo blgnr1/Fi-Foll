@@ -221,29 +221,17 @@ class TransactionRow extends StatelessWidget {
 
   void _showDetail(BuildContext context) {
     final dateFmt = DateFormat('dd MMM yyyy, HH:mm', 'tr_TR');
-    showModalBottomSheet(
+    showDialog(
       context: context,
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-      builder: (_) => Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text('İşlem Detayı',
+            style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18)),
+        content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(
-              child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                      color: Colors.black12,
-                      borderRadius: BorderRadius.circular(2))),
-            ),
-            const SizedBox(height: 16),
-            const Text('İşlem Detayı',
-                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18)),
-            const SizedBox(height: 16),
-            _DetailRow('Hesap Açılış Tarihi', dateFmt.format(transaction.createdAt)),
+            _DetailRow('İşlem Tarihi', dateFmt.format(transaction.createdAt)),
             _DetailRow('Tür', transaction.type == TransactionType.credit ? 'Alacak' : 'Verecek'),
             _DetailRow('Kategori', transaction.category.name.toUpperCase()),
             _DetailRow('Miktar', '${transaction.amount.toStringAsFixed(2)} ${transaction.currency}'),
@@ -254,9 +242,14 @@ class TransactionRow extends StatelessWidget {
             _DetailRow('Durum', transaction.status.name.toUpperCase()),
             if (transaction.note != null && transaction.note!.isNotEmpty)
               _DetailRow('Not', transaction.note!),
-            const SizedBox(height: 24),
           ],
         ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Kapat'),
+          ),
+        ],
       ),
     );
   }
